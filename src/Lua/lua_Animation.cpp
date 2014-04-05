@@ -29,11 +29,12 @@ NS_RAINBOW_LUA_BEGIN
 
 	Animation::Animation(lua_State *L) : animation(nullptr)
 	{
-		LUA_ASSERT((luaR_isuserdata(L, 1) || lua_isnil(L, 1)) &&
-		           lua_istable(L, 2) &&
-		           lua_isnumber(L, 3) &&
-		           (lua_isnumber(L, 4) || lua_isnone(L, 4)),
-		           "rainbow.animation(sprite, frames{}, fps, loop_delay = 0)");
+		argscheck(L, 1,
+		          "rainbow.animation(sprite, frames{}, fps, loop_delay = 0)",
+		          (luaR_isuserdata(L, 1) || lua_isnil(L, 1)),
+		          lua_istable(L, 2),
+		          lua_isnumber(L, 3),
+		          (lua_isnumber(L, 4) || lua_isnone(L, 4)));
 
 		replacetable(L, 1);
 		::Sprite *sprite =
@@ -84,7 +85,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Animation::set_delay(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 2), "<animation>:set_loop(delay_in_ms)");
+		argscheck(L, 2, "<animation>:set_loop(delay_in_ms)",
+		          lua_isnumber(L, 2));
 
 		Animation *self = Bind::self(L);
 		if (!self)
@@ -96,7 +98,7 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Animation::set_fps(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 2), "<animation>:set_fps(fps)");
+		argscheck(L, 2, "<animation>:set_fps(fps)", lua_isnumber(L, 2));
 
 		Animation *self = Bind::self(L);
 		if (!self)
@@ -108,7 +110,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Animation::set_frames(lua_State *L)
 	{
-		LUA_ASSERT(lua_gettop(L) > 2, "<animation>:set_frames(f1, f2, ...)");
+		argscheck(L, 2, "<animation>:set_frames(f1, f2, ...)",
+		          lua_gettop(L) > 2);
 
 		Animation *self = Bind::self(L);
 		if (!self)
@@ -125,7 +128,7 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Animation::set_sprite(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2), "<animation>:set_sprite(sprite)");
+		argscheck(L, 2, "<animation>:set_sprite(sprite)", lua_isuserdata(L, 2));
 
 		Animation *self = Bind::self(L);
 		if (!self)

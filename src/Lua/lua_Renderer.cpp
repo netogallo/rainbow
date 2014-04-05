@@ -2,21 +2,20 @@
 // Distributed under the MIT License.
 // (See accompanying file LICENSE or copy at http://opensource.org/licenses/MIT)
 
-#include <lua.hpp>
-
 #include "Graphics/Renderer.h"
 #include "Graphics/ShaderManager.h"
 #include "Graphics/TextureManager.h"
+#include "Lua/LuaHelper.h"
 #include "Lua/lua_Renderer.h"
 
 namespace
 {
+	using Rainbow::Lua::argscheck;
+
 	int set_clear_color(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 1) &&
-		           lua_isnumber(L, 2) &&
-		           lua_isnumber(L, 3),
-		           "rainbow.renderer.set_clear_color(0xrr, 0xgg, 0xbb)");
+		argscheck(L, 1, "rainbow.renderer.set_clear_color(0xrr, 0xgg, 0xbb)",
+		          lua_isnumber(L, 1), lua_isnumber(L, 2), lua_isnumber(L, 3));
 
 		const float r = lua_tonumber(L, 1) / 255.0f;
 		const float g = lua_tonumber(L, 2) / 255.0f;
@@ -27,7 +26,8 @@ namespace
 
 	int set_filter(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 1), "rainbow.renderer.set_filter(filter)");
+		argscheck(L, 1, "rainbow.renderer.set_filter(filter)",
+		          lua_isnumber(L, 1));
 
 		const int filter = lua_tointeger(L, 1);
 		LUA_CHECK(L, filter == GL_NEAREST || filter == GL_LINEAR,
@@ -38,11 +38,12 @@ namespace
 
 	int set_projection(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 1) &&
-		           lua_isnumber(L, 2) &&
-		           lua_isnumber(L, 3) &&
-		           lua_isnumber(L, 4),
-		           "rainbow.renderer.set_projection(left, right, bottom, top)");
+		argscheck(L, 1,
+		          "rainbow.renderer.set_projection(left, right, bottom, top)",
+		          lua_isnumber(L, 1),
+		          lua_isnumber(L, 2),
+		          lua_isnumber(L, 3),
+		          lua_isnumber(L, 4));
 
 		ShaderManager::Instance->set_projection(
 		    lua_tonumber(L, 1), lua_tonumber(L, 2),
@@ -63,9 +64,11 @@ NS_RAINBOW_LUA_MODULE_BEGIN(Renderer)
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
 		luaR_rawsetfield(L, lua_pushinteger, max_texture_size, "max_texture_size");
 
-		const char *extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+		const char *extensions =
+		    reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 		R_ASSERT(extensions, "OpenGL context not set up");
-		bool support = strstr(extensions, "GL_IMG_texture_compression_pvrtc") != nullptr;
+		const bool support =
+		    strstr(extensions, "GL_IMG_texture_compression_pvrtc") != nullptr;
 		luaR_rawsetfield(L, lua_pushboolean, support, "supports_pvrtc");
 
 		luaR_rawsetcclosurefield(L, &set_clear_color, "set_clear_color");

@@ -8,6 +8,8 @@
 #include "Lua/LuaHelper.h"
 #include "Lua/lua_Shaders.h"
 
+using Rainbow::Lua::argscheck;
+
 namespace
 {
 	class Diffuse : public Rainbow::Lua::Shader,
@@ -78,7 +80,7 @@ int Diffuse::id() const
 
 int Diffuse::set_cutoff(lua_State *L)
 {
-	LUA_ASSERT(lua_isnumber(L, 2), "<diffuse>:set_cutoff(cutoff)");
+	argscheck(L, 2, "<diffuse>:set_cutoff(cutoff)", lua_isnumber(L, 2));
 
 	Diffuse *self = Bind::self(L);
 	if (!self)
@@ -90,7 +92,7 @@ int Diffuse::set_cutoff(lua_State *L)
 
 int Diffuse::set_radius(lua_State *L)
 {
-	LUA_ASSERT(lua_isnumber(L, 2), "<diffuse>:set_radius(radius)");
+	argscheck(L, 2, "<diffuse>:set_radius(radius)", lua_isnumber(L, 2));
 
 	Diffuse *self = Bind::self(L);
 	if (!self)
@@ -102,10 +104,10 @@ int Diffuse::set_radius(lua_State *L)
 
 int Diffuse::set_position(lua_State *L)
 {
-	LUA_ASSERT(lua_isnumber(L, 2) &&
-	           lua_isnumber(L, 3) &&
-	           (lua_isnumber(L, 4) || lua_isnone(L, 4)),
-	           "<diffuse>:set_position(x, y, z = 100.0)");
+	argscheck(L, 2, "<diffuse>:set_position(x, y, z = 100.0)",
+	          lua_isnumber(L, 2),
+	          lua_isnumber(L, 3),
+	          (lua_isnumber(L, 4) || lua_isnone(L, 4)));
 
 	Diffuse *self = Bind::self(L);
 	if (!self)

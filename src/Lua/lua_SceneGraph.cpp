@@ -45,6 +45,8 @@ namespace
 
 NS_RAINBOW_LUA_BEGIN
 {
+	using Rainbow::Lua::argscheck;
+
 	template<>
 	const char SceneGraph::Bind::class_name[] = "scenegraph";
 
@@ -103,9 +105,9 @@ NS_RAINBOW_LUA_BEGIN
 	template<class T, SceneGraph::CastingMethod C>
 	int SceneGraph::add_child(lua_State *L)
 	{
-		R_ASSERT(luaR_isuserdata(L, 2) &&
-		         (luaR_isuserdata(L, 3) || lua_isnone(L, 3)),
-		         "rainbow.scenegraph: Invalid parameters");
+		argscheck(L, 2, "rainbow.scenegraph:add([parent,] object)",
+		          luaR_isuserdata(L, 2),
+		          (luaR_isuserdata(L, 3) || lua_isnone(L, 3)));
 
 		SceneGraph *self = Bind::self(L);
 		if (!self)
@@ -147,8 +149,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SceneGraph::add_node(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2) || lua_isnone(L, 2),
-		           "rainbow.scenegraph:add_node([parent])");
+		argscheck(L, 2, "rainbow.scenegraph:add_node([parent])",
+		          lua_isuserdata(L, 2) || lua_isnone(L, 2));
 
 		SceneGraph *self = Bind::self(L);
 		if (!self)
@@ -163,10 +165,10 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SceneGraph::attach_program(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2) &&
-		           ((lua_isnumber(L, 3) && lua_tointeger(L, 3) == 0) ||
-		                lua_isuserdata(L, 3)),
-		           "rainbow.scenegraph:attach_program(node, program)");
+		argscheck(L, 2, "rainbow.scenegraph:attach_program(node, program)",
+		          lua_isuserdata(L, 2),
+		          ((lua_isnumber(L, 3) && lua_tointeger(L, 3) == 0) ||
+		              lua_isuserdata(L, 3)));
 
 		SceneGraph *self = Bind::self(L);
 		if (!self)
@@ -180,7 +182,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SceneGraph::disable(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2), "rainbow.scenegraph:disable(node)");
+		argscheck(L, 2, "rainbow.scenegraph:disable(node)",
+		          lua_isuserdata(L, 2));
 
 		luaR_tonode(L, 2)->enabled = false;
 		return 0;
@@ -188,7 +191,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SceneGraph::enable(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2), "rainbow.scenegraph:enable(node)");
+		argscheck(L, 2, "rainbow.scenegraph:enable(node)",
+		          lua_isuserdata(L, 2));
 
 		luaR_tonode(L, 2)->enabled = true;
 		return 0;
@@ -196,7 +200,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SceneGraph::remove(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2), "rainbow.scenegraph:remove(node)");
+		argscheck(L, 2, "rainbow.scenegraph:remove(node)",
+		          lua_isuserdata(L, 2));
 
 		luaR_tonode(L, 2)->remove();
 		return 0;
@@ -204,8 +209,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SceneGraph::set_parent(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2) && lua_isuserdata(L, 3),
-		           "rainbow.scenegraph:set_parent(parent, child)");
+		argscheck(L, 2, "rainbow.scenegraph:set_parent(parent, child)",
+		          lua_isuserdata(L, 2), lua_isuserdata(L, 3));
 
 		luaR_tonode(L, 3)->set_parent(luaR_tonode(L, 2));
 		return 0;
@@ -213,10 +218,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SceneGraph::move(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2) &&
-		           lua_isnumber(L, 3) &&
-		           lua_isnumber(L, 4),
-		           "rainbow.scenegraph:move(node, x, y)");
+		argscheck(L, 2, "rainbow.scenegraph:move(node, x, y)",
+		          lua_isuserdata(L, 2), lua_isnumber(L, 3), lua_isnumber(L, 4));
 
 		luaR_tonode(L, 2)->move(Vec2f(lua_tonumber(L, 3), lua_tonumber(L, 4)));
 		return 0;

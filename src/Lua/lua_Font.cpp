@@ -2,9 +2,8 @@
 // Distributed under the MIT License.
 // (See accompanying file LICENSE or copy at http://opensource.org/licenses/MIT)
 
-#include <lua.hpp>
-
 #include "Common/Data.h"
+#include "Lua/LuaHelper.h"
 #include "Lua/lua_Font.h"
 
 NS_RAINBOW_LUA_BEGIN
@@ -16,12 +15,12 @@ NS_RAINBOW_LUA_BEGIN
 	const bool Font::Bind::is_constructible = true;
 
 	template<>
-	const luaL_Reg Font::Bind::functions[] = { { 0, 0 } };
+	const luaL_Reg Font::Bind::functions[] = { { nullptr, nullptr } };
 
 	Font::Font(lua_State *L)
 	{
-		LUA_ASSERT(lua_isstring(L, 1) && lua_isnumber(L, 2),
-		           "rainbow.font(\"path/to/fontface\", font_size)");
+		argscheck(L, 1, "rainbow.font(\"path/to/fontface\", font_size)",
+		          lua_isstring(L, 1), lua_isnumber(L, 2));
 
 		const Data &font = Data::load_asset(lua_tostring(L, 1));
 		if (!font)

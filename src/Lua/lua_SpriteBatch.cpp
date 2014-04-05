@@ -33,11 +33,11 @@ NS_RAINBOW_LUA_BEGIN
 		        "<spritebatch>:create_sprite() and <sprite>:set_texture() "
 		        "instead.\n");
 
-		LUA_ASSERT(lua_isnumber(L, 2) &&
-		           lua_isnumber(L, 3) &&
-		           lua_isnumber(L, 4) &&
-		           lua_isnumber(L, 5),
-		           "<spritebatch>:add(x, y, width, height)");
+		argscheck(L, 2, "<spritebatch>:add(x, y, width, height)",
+		          lua_isnumber(L, 2),
+		          lua_isnumber(L, 3),
+		          lua_isnumber(L, 4),
+		          lua_isnumber(L, 5));
 
 		SpriteBatch *self = Bind::self(L);
 		if (!self)
@@ -56,8 +56,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SpriteBatch::create_sprite(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 2) && lua_isnumber(L, 3),
-		           "<spritebatch>:create_sprite(width, height)");
+		argscheck(L, 2, "<spritebatch>:create_sprite(width, height)",
+		          lua_isnumber(L, 2), lua_isnumber(L, 3));
 
 		SpriteBatch *self = Bind::self(L);
 		if (!self)
@@ -74,7 +74,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SpriteBatch::set_normal(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2), "<spritebatch>:set_normal(<texture>)");
+		argscheck(L, 2, "<spritebatch>:set_normal(<texture>)",
+		          lua_isuserdata(L, 2));
 
 		SpriteBatch *self = Bind::self(L);
 		if (!self)
@@ -86,8 +87,9 @@ NS_RAINBOW_LUA_BEGIN
 
 	int SpriteBatch::set_texture(lua_State *L)
 	{
-		LUA_ASSERT(lua_isstring(L, 2) || lua_isuserdata(L, 2),
-		           "<spritebatch>:set_texture(\"/path/to/texture\"|<texture>)");
+		argscheck(L, 2,
+		          "<spritebatch>:set_texture(\"/path/to/texture\"|<texture>)",
+		          lua_isstring(L, 2) || lua_isuserdata(L, 2));
 
 		SpriteBatch *self = Bind::self(L);
 		if (!self)

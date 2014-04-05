@@ -49,8 +49,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Label::set_alignment(lua_State *L)
 	{
-		LUA_ASSERT(lua_isstring(L, 2),
-		           "<label>:set_alignment('l' | 'c' | 'r')");
+		argscheck(L, 2, "<label>:set_alignment('l' | 'c' | 'r')",
+		          lua_isstring(L, 2));
 
 		Label *self = Bind::self(L);
 		if (!self)
@@ -73,11 +73,11 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Label::set_color(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 2) &&
-		           lua_isnumber(L, 3) &&
-		           lua_isnumber(L, 4) &&
-		           (lua_isnumber(L, 5) || lua_isnone(L, 5)),
-		           "<label>:set_color(r, g, b, a = 255)");
+		argscheck(L, 2, "<label>:set_color(r, g, b, a = 255)",
+		          lua_isnumber(L, 2),
+		          lua_isnumber(L, 3),
+		          lua_isnumber(L, 4),
+		          (lua_isnumber(L, 5) || lua_isnone(L, 5)));
 
 		Label *self = Bind::self(L);
 		if (!self)
@@ -93,7 +93,7 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Label::set_font(lua_State *L)
 	{
-		LUA_ASSERT(lua_isuserdata(L, 2), "<label>:set_font(<font>)");
+		argscheck(L, 2, "<label>:set_font(<font>)", lua_isuserdata(L, 2));
 
 		Label *self = Bind::self(L);
 		if (!self)
@@ -105,8 +105,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Label::set_position(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 2) && lua_isnumber(L, 3),
-		           "<label>:set_position(x, y)");
+		argscheck(L, 2, "<label>:set_position(x, y)",
+		          lua_isnumber(L, 2), lua_isnumber(L, 3));
 
 		Label *self = Bind::self(L);
 		if (!self)
@@ -119,7 +119,7 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Label::set_scale(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 2), "<label>:set_scale(f)");
+		argscheck(L, 2, "<label>:set_scale(f)", lua_isnumber(L, 2));
 
 		Label *self = Bind::self(L);
 		if (!self)
@@ -131,7 +131,7 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Label::set_text(lua_State *L)
 	{
-		LUA_ASSERT(lua_isstring(L, 2), "<label>:set_text(\"string\")");
+		argscheck(L, 2, "<label>:set_text(\"string\")", lua_isstring(L, 2));
 
 		Label *self = Bind::self(L);
 		if (!self)
@@ -143,8 +143,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Label::move(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 2) && lua_isnumber(L, 3),
-		           "<label>:move(x, y)");
+		argscheck(L, 2, "<label>:move(x, y)",
+		          lua_isnumber(L, 2), lua_isnumber(L, 3));
 
 		Label *self = Bind::self(L);
 		if (!self)

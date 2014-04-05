@@ -2,9 +2,8 @@
 // Distributed under the MIT License.
 // (See accompanying file LICENSE or copy at http://opensource.org/licenses/MIT)
 
-#include <lua.hpp>
-
 #include "FileSystem/Path.h"
+#include "Lua/LuaHelper.h"
 #include "Lua/lua_Texture.h"
 
 NS_RAINBOW_LUA_BEGIN
@@ -24,7 +23,8 @@ NS_RAINBOW_LUA_BEGIN
 
 	Texture::Texture(lua_State *L)
 	{
-		LUA_ASSERT(lua_isstring(L, 1), "rainbow.texture(\"/path/to/texture\")");
+		argscheck(L, 1, "rainbow.texture(\"/path/to/texture\")",
+		          lua_isstring(L, 1));
 
 		DataMap data(Path(lua_tostring(L, 1)));
 		if (!data)
@@ -36,11 +36,11 @@ NS_RAINBOW_LUA_BEGIN
 
 	int Texture::create(lua_State *L)
 	{
-		LUA_ASSERT(lua_isnumber(L, 2) &&
-		           lua_isnumber(L, 3) &&
-		           lua_isnumber(L, 4) &&
-		           lua_isnumber(L, 5),
-		           "<texture>:create(x, y, width, height)");
+		argscheck(L, 2, "<texture>:create(x, y, width, height)",
+		          lua_isnumber(L, 2),
+		          lua_isnumber(L, 3),
+		          lua_isnumber(L, 4),
+		          lua_isnumber(L, 5));
 
 		Texture *self = Bind::self(L);
 		if (!self)

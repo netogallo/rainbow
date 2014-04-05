@@ -2,17 +2,18 @@
 // Distributed under the MIT License.
 // (See accompanying file LICENSE or copy at http://opensource.org/licenses/MIT)
 
-#include <lua.hpp>
-
 #include "Common/Data.h"
 #include "Common/Debug.h"
+#include "Lua/LuaHelper.h"
 #include "Lua/lua_IO.h"
 
 namespace
 {
+	using Rainbow::Lua::argscheck;
+
 	int load(lua_State *L)
 	{
-		LUA_ASSERT(lua_isstring(L, 1), "rainbow.io.load(filename)");
+		argscheck(L, 1, "rainbow.io.load(filename)", lua_isstring(L, 1));
 
 		Data blob = Data::load_document(lua_tostring(L, 1));
 		if (!blob)
@@ -24,10 +25,8 @@ namespace
 
 	int save(lua_State *L)
 	{
-		LUA_ASSERT(lua_isstring(L, 1) &&
-		           lua_isstring(L, 2) &&
-		           lua_isnumber(L, 3),
-		           "rainbow.io.save(filename, data, size)");
+		argscheck(L, 1, "rainbow.io.save(filename, data, size)",
+		          lua_isstring(L, 1), lua_isstring(L, 2), lua_isnumber(L, 3));
 
 		Data blob(
 		    lua_tostring(L, 2), lua_tointeger(L, 3), Data::kDataReference);
@@ -42,8 +41,8 @@ NS_RAINBOW_LUA_MODULE_BEGIN(IO)
 	{
 		lua_pushliteral(L, "io");
 		lua_createtable(L, 0, 2);
-		luaR_rawsetcclosurefield(L, &load, "load");
-		luaR_rawsetcclosurefield(L, &save, "save");
+		luaR_rawsetcclosurefield(L, &::load, "load");
+		luaR_rawsetcclosurefield(L, &::save, "save");
 		lua_rawset(L, -3);
 	}
 } NS_RAINBOW_LUA_MODULE_END(IO)

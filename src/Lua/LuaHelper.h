@@ -9,7 +9,18 @@
 
 #include <lua.hpp>
 
+#include "Common/Debug.h"
 #include "Lua/LuaMacros.h"
+
+#ifdef RAINBOW_OS_UNIX
+#	define kTextBoldColorGreen  "\033[1;32m"
+#	define kTextBoldColorRed    "\033[1;31m"
+#	define kTextColorReset      "\033[0m"
+#else
+#	define kTextBoldColorGreen
+#	define kTextBoldColorRed
+#	define kTextColorReset
+#endif
 
 class Data;
 
@@ -18,6 +29,9 @@ NS_RAINBOW_LUA_BEGIN
 	/// Creates a Lua wrapped object.
 	template<class T>
 	int alloc(lua_State *L);
+
+	template<typename... Args>
+	void argscheck(lua_State *L, int first, const char *syntax, Args&&... args);
 
 	template<class T>
 	int dealloc(lua_State *L);
@@ -102,6 +116,62 @@ NS_RAINBOW_LUA_BEGIN
 		return 1;
 	}
 
+	template<typename... Args>
+#ifdef NDEBUG
+	void argscheck(Args&&...) { }
+#else
+	void argscheck(lua_State *L, int first, const char *syntax, Args&&... args)
+	{
+		R_ASSERT(first > 0, "Invalid first argument number");
+
+		static char error[512];
+
+		const bool conditions[] { static_cast<bool>(args)... };
+		int prev_index = first - 1;
+		int token = 0;
+		for (int i = 0; i < static_cast<int>(sizeof...(Args)); ++i)
+		{
+			if (!conditions[i])
+			{
+				for (; prev_index < i + first; ++prev_index, ++token)
+				{
+					while (syntax[token] != '(' && syntax[token] != ',')
+					{
+						error[token] = ' ';
+						++token;
+					}
+				}
+				--token;  // Undo the last increment.
+				do
+				{
+					error[token] = ' ';
+				} while (syntax[++token] == ' ');
+				error[token] = '^';
+				++token;
+				while (syntax[token] != ')' && syntax[token] != ',')
+				{
+					error[token] = '~';
+					++token;
+				}
+			}
+		}
+		if (prev_index)
+		{
+			error[token] = '\0';
+			lua_Debug entry;
+			lua_getstack(L, 0, &entry);
+			lua_getinfo(L, "n", &entry);
+			luaL_error(L,
+			           kTextBoldColorRed "syntax:" kTextColorReset " bad argument(s) to '%s'\n"
+			           "        %s\n"
+			           "        " kTextBoldColorGreen "%s" kTextColorReset,
+			           entry.name,
+			           syntax,
+			           error);
+		}
+	}
+#endif
+
 	template<class T>
 	int dealloc(lua_State *L)
 	{
@@ -144,5 +214,9 @@ NS_RAINBOW_LUA_BEGIN
 		return static_cast<T*>(luaR_touserdata(L, n, T::class_name));
 	}
 } NS_RAINBOW_LUA_END
+
+#undef kTextBoldColorGreen
+#undef kTextBoldColorRed
+#undef kTextColorReset
 
 #endif
