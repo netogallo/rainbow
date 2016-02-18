@@ -12,8 +12,6 @@
 #include "Common/Logging.h"
 #include "Common/NonCopyable.h"
 
-namespace rainbow { class LinearAllocator; }
-
 /// <summary>Makes a class reference countable.</summary>
 /// <remarks>
 ///   Subclasses of <see cref="RefCounted"/> can be wrapped with
@@ -21,6 +19,9 @@ namespace rainbow { class LinearAllocator; }
 /// </remarks>
 class RefCounted : private NonCopyable<RefCounted>
 {
+public:
+    void retain() { ++refs_; }
+
 protected:
     RefCounted() : refs_(0) {}
     ~RefCounted() = default;
@@ -28,7 +29,6 @@ protected:
 private:
     unsigned int refs_;
 
-    friend rainbow::LinearAllocator;
     template <typename T> friend class SharedPtr;
 };
 

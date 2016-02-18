@@ -1,10 +1,17 @@
 # Generated files
+*.pyc
 *.swp
 .DS_Store
 .browse.VC.*
+.vs/
 Rainbow.sublime-workspace
+Rainbow.xproj
+Rainbow.xproj.user
+StyleCop.Cache
+bin/
+obj/
+project.lock.json
 project.xcworkspace/
-src/.ycm_extra_conf.pyc
 xcuserdata/
 
 # Libraries
