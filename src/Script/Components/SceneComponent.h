@@ -17,9 +17,9 @@ namespace rainbow
         virtual ~SceneComponent() { node_->remove(); }
 
         bool is_enabled() const { return node_->is_enabled(); }
-        rainbow::SceneNode* node() const { return node_; }
+        auto node() const { return node_; }
 
-        Vec2f position() const { return position_; }
+        auto position() const { return position_; }
         void set_position(const Vec2f& p) { move(p - position_); }
 
         void disable() { node_->set_enabled(false); }

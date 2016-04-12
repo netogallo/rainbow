@@ -24,7 +24,7 @@ namespace rainbow
     class Animator
     {
     public:
-        Animator() : active_(-1), animation_(Sprite::Ref(), nullptr, 1) {}
+        Animator() : active_(-1), animation_(SpriteRef(), nullptr, 1) {}
 
         ~Animator()
         {
@@ -75,7 +75,7 @@ namespace rainbow
         /// <summary>Sets the animation to play.</summary>
         /// <param name="name">Name of the animation to set.</param>
         /// <returns>A reference to the newly set animation.</returns>
-        Animation& set(int name) { return set(name, animations_.at(name)); }
+        auto set(int name) { return set(name, animations_.at(name)); }
 
     private:
         struct Animation
@@ -96,7 +96,7 @@ namespace rainbow
             animation_.release();
         }
 
-        ::Animation& set(int name, const Animation& anim)
+        auto set(int name, const Animation& anim) -> ::Animation*
         {
             release();
             animation_.set_frame_rate(anim.frame_rate);
@@ -105,7 +105,7 @@ namespace rainbow
             animation_.set_callback(anim.callback);
             animation_.start();
             active_ = name;
-            return animation_;
+            return &animation_;
         }
     };
 

@@ -15,10 +15,10 @@ namespace rainbow
     public:
         auto batch() -> SpriteBatch& { return batch_; }
         auto batch() const -> const SpriteBatch& { return batch_; }
-        auto first() const -> Sprite::Ref { return sprite(0); }
-        auto is_mirrored() const -> bool { return first()->is_mirrored(); }
-        auto second() const -> Sprite::Ref { return sprite(1); }
-        auto third() const -> Sprite::Ref { return sprite(2); }
+        auto first() const { return sprite(0); }
+        bool is_mirrored() const { return first()->is_mirrored(); }
+        auto second() const { return sprite(1); }
+        auto third() const { return sprite(2); }
 
         /// <summary>Sets local angle of rotation (in radian).</summary>
         void set_local_rotation(float r)
@@ -52,7 +52,7 @@ namespace rainbow
         /// <returns>
         ///   Reference to the newly created sprite, positioned at (0,0).
         /// </returns>
-        auto add_sprite(unsigned int width, unsigned int height) -> Sprite::Ref
+        auto add_sprite(unsigned int width, unsigned int height)
         {
             return batch().create_sprite(width, height);
         }
@@ -79,10 +79,11 @@ namespace rainbow
         void show() { batch().set_visible(true); }
 
         /// <summary>Returns the <see cref="Sprite"/> at index.</summary>
-        auto sprite(size_t i) const -> Sprite::Ref
+        auto sprite(size_t i) const -> SpriteRef
         {
             R_ASSERT(i < batch().size(),
                      "Tried to access a sprite out of range.");
+
             return {&batch(), i};
         }
 
