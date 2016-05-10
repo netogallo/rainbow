@@ -9,6 +9,8 @@
 #include "Lua/LuaHelper.h"
 #include "Lua/LuaSyntax.h"
 
+using rainbow::ControllerAxis;
+using rainbow::ControllerButton;
 using rainbow::KeyStroke;
 using rainbow::VirtualKey;
 
@@ -37,6 +39,40 @@ NS_RAINBOW_LUA_MODULE_BEGIN(input)
                                          "pointer_ended",
                                          "pointer_moved"};
 
+        int axis(lua_State* L)
+        {
+            // rainbow.input.axis(controller, axis)
+            Argument<lua_Number>::is_required(L, 1);
+            Argument<lua_Number>::is_required(L, 2);
+
+            const auto controller = static_cast<unsigned>(lua_tointeger(L, 1));
+            const auto axis = static_cast<unsigned>(lua_tointeger(L, 2));
+            lua_pushboolean(
+                L,
+                controller < Input::kNumSupportedControllers &&
+                    axis < to_underlying_type(ControllerAxis::Count) &&
+                    Input::Get()->axis(
+                        controller, static_cast<ControllerAxis>(axis)));
+            return 1;
+        }
+
+        int is_button_down(lua_State* L)
+        {
+            // rainbow.input.is_button_down(controller, button)
+            Argument<lua_Number>::is_required(L, 1);
+            Argument<lua_Number>::is_required(L, 2);
+
+            const auto controller = static_cast<unsigned>(lua_tointeger(L, 1));
+            const auto button = static_cast<unsigned>(lua_tointeger(L, 2));
+            lua_pushboolean(
+                L,
+                controller < Input::kNumSupportedControllers &&
+                    button < to_underlying_type(ControllerButton::Count) &&
+                    Input::Get()->is_down(
+                        controller, static_cast<ControllerButton>(button)));
+            return 1;
+        }
+
         int is_key_down(lua_State* L)
         {
             // rainbow.input.is_key_down(key)
@@ -45,7 +81,7 @@ NS_RAINBOW_LUA_MODULE_BEGIN(input)
             const unsigned key = static_cast<unsigned>(lua_tointeger(L, 1));
             lua_pushboolean(
                 L,
-                key < static_cast<unsigned>(VirtualKey::KeyCount) &&
+                key < to_underlying_type(VirtualKey::KeyCount) &&
                     Input::Get()->is_down(static_cast<VirtualKey>(key)));
             return 1;
         }
@@ -112,7 +148,7 @@ NS_RAINBOW_LUA_MODULE_BEGIN(input)
     void init(lua_State* L)
     {
         lua_pushliteral(L, "input");
-        lua_createtable(L, 0, 12);
+        lua_createtable(L, 0, 14);
 
         // rainbow.input.acceleration
         lua_pushliteral(L, "acceleration");
@@ -120,6 +156,12 @@ NS_RAINBOW_LUA_MODULE_BEGIN(input)
         lua_pushvalue(L, -1);
         acceleration = luaL_ref(L, LUA_REGISTRYINDEX);
         lua_rawset(L, -3);
+
+        // rainbow.input.axis
+        luaR_rawsetcfunction(L, "axis", &axis);
+
+        // rainbow.input.is_button_down
+        luaR_rawsetcfunction(L, "is_button_down", &is_button_down);
 
         // rainbow.input.is_key_down
         luaR_rawsetcfunction(L, "is_key_down", &is_key_down);
