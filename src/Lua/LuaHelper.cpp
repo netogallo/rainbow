@@ -5,6 +5,7 @@
 #include "Lua/LuaHelper.h"
 
 #include "Common/Data.h"
+#include "Debug/StackTrace.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Path.h"
 #include "Lua/LuaDebugging.h"
@@ -21,6 +22,15 @@ namespace
     const char kLuaErrorRuntime[] = "runtime";
     const char kLuaErrorSyntax[] = "syntax";
     const char kLuaErrorType[] = "Object is not of type '%s'";
+
+    int at_panic(lua_State* L)
+    {
+        luai_writestringerror(
+            "PANIC: unprotected error in call to Lua API (%s)\n",
+            lua_tostring(L, -1));
+        rainbow::debug::dump_stack(6);
+        return 0;
+    }
 
     int load_module(lua_State* L,
                     char* path,
@@ -142,6 +152,14 @@ NS_RAINBOW_LUA_BEGIN
             return 0;
         }
         return 1;
+    }
+
+    auto newstate() -> std::unique_ptr<lua_State, decltype(&lua_close)>
+    {
+        lua_State* L = luaL_newstate();
+        if (L != nullptr)
+            lua_atpanic(L, &at_panic);
+        return {L, lua_close};
     }
 
     template <>

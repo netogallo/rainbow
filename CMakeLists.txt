@@ -53,6 +53,8 @@ set(SOURCE_FILES
     src/Common/UTF8.h
     src/Config.cpp
     src/Config.h
+    src/Debug/StackTrace.cpp
+    src/Debug/StackTrace.h
     src/Director.cpp
     src/Director.h
     src/FileSystem/File.cpp
@@ -210,11 +212,13 @@ else()
     list(APPEND SOURCE_FILES
          src/Common/impl/DataMap_Win.cpp
          src/Common/impl/DataMap_Win.h
+         src/Debug/impl/StackTrace_Win.cpp
          src/Platform/impl/SystemInfo_Win.cpp)
   else()
     list(APPEND SOURCE_FILES
          src/Common/impl/DataMap_Unix.cpp
-         src/Common/impl/DataMap_Unix.h)
+         src/Common/impl/DataMap_Unix.h
+         src/Debug/impl/StackTrace_Unix.cpp)
     if(APPLE)
       list(APPEND SOURCE_FILES
            src/Graphics/Decoders/UIKit.h

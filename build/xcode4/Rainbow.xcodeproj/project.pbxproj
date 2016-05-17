@@ -146,6 +146,8 @@
 		196CB728161E4ADD0068C809 /* Gatekeeper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 196CB725161E4ADD0068C809 /* Gatekeeper.cpp */; };
 		196CB72F161E4D940068C809 /* b2MotorJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 196CB72D161E4D940068C809 /* b2MotorJoint.cpp */; };
 		197396DD15A505F60064BF7D /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 197396DB15A505F60064BF7D /* TextureManager.cpp */; };
+		197AD54B1CEB5B3100795B1C /* StackTrace_Unix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 197AD5471CEB5B3100795B1C /* StackTrace_Unix.cpp */; };
+		197AD54D1CEB5B3100795B1C /* StackTrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 197AD5491CEB5B3100795B1C /* StackTrace.cpp */; };
 		198644C31B531CDD004378CF /* LyricalLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 198644C11B531CDD004378CF /* LyricalLabel.cpp */; };
 		198644C81B531D19004378CF /* nanovg.c in Sources */ = {isa = PBXBuildFile; fileRef = 198644C61B531D19004378CF /* nanovg.c */; };
 		19865982175E98F700723171 /* Data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 19865981175E98F700723171 /* Data.cpp */; };
@@ -505,6 +507,9 @@
 		196CB72E161E4D940068C809 /* b2MotorJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = b2MotorJoint.h; sourceTree = "<group>"; };
 		197396DB15A505F60064BF7D /* TextureManager.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = TextureManager.cpp; sourceTree = "<group>"; };
 		197396DC15A505F60064BF7D /* TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureManager.h; sourceTree = "<group>"; };
+		197AD5471CEB5B3100795B1C /* StackTrace_Unix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StackTrace_Unix.cpp; sourceTree = "<group>"; };
+		197AD5491CEB5B3100795B1C /* StackTrace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StackTrace.cpp; sourceTree = "<group>"; };
+		197AD54A1CEB5B3100795B1C /* StackTrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackTrace.h; sourceTree = "<group>"; };
 		198644BD1B531CBD004378CF /* Button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
 		198644C11B531CDD004378CF /* LyricalLabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LyricalLabel.cpp; sourceTree = "<group>"; };
 		198644C21B531CDD004378CF /* LyricalLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LyricalLabel.h; sourceTree = "<group>"; };
@@ -1162,6 +1167,7 @@
 			children = (
 				19DFE51F1C6002890079CB58 /* Audio */,
 				1939A180152C425D00494609 /* Common */,
+				197AD5451CEB5B3100795B1C /* Debug */,
 				1946B7A91836E54600F74A3B /* FileSystem */,
 				1939A1BC152C425D00494609 /* Graphics */,
 				196CB724161E4ADD0068C809 /* Heimdall */,
@@ -1266,6 +1272,25 @@
 			);
 			name = Heimdall;
 			path = ../../../src/Heimdall;
+			sourceTree = "<group>";
+		};
+		197AD5451CEB5B3100795B1C /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				197AD5461CEB5B3100795B1C /* impl */,
+				197AD5491CEB5B3100795B1C /* StackTrace.cpp */,
+				197AD54A1CEB5B3100795B1C /* StackTrace.h */,
+			);
+			name = Debug;
+			path = ../../../src/Debug;
+			sourceTree = "<group>";
+		};
+		197AD5461CEB5B3100795B1C /* impl */ = {
+			isa = PBXGroup;
+			children = (
+				197AD5471CEB5B3100795B1C /* StackTrace_Unix.cpp */,
+			);
+			path = impl;
 			sourceTree = "<group>";
 		};
 		198644C41B531CF5004378CF /* NanoVG */ = {
@@ -1584,6 +1609,7 @@
 				1946B7AF1836E54600F74A3B /* Path.cpp in Sources */,
 				1939A055152C401300494609 /* b2EdgeShape.cpp in Sources */,
 				1939A056152C401300494609 /* b2PolygonShape.cpp in Sources */,
+				197AD54D1CEB5B3100795B1C /* StackTrace.cpp in Sources */,
 				1939A057152C401300494609 /* b2BlockAllocator.cpp in Sources */,
 				1939A058152C401300494609 /* b2Draw.cpp in Sources */,
 				1939A059152C401300494609 /* b2Math.cpp in Sources */,
@@ -1660,6 +1686,7 @@
 				1939A161152C401300494609 /* liolib.c in Sources */,
 				1939A162152C401300494609 /* llex.c in Sources */,
 				1939A163152C401300494609 /* lmathlib.c in Sources */,
+				197AD54B1CEB5B3100795B1C /* StackTrace_Unix.cpp in Sources */,
 				198F427B1A9151F500BE7A73 /* LuaScript.cpp in Sources */,
 				19E7748A1A02C8D3005DE249 /* OverlayActivator.cpp in Sources */,
 				1960AFD41A4E278E0015A3AD /* Fixture.cpp in Sources */,

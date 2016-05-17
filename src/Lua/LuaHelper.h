@@ -59,7 +59,7 @@ NS_RAINBOW_LUA_BEGIN
     ///   defined.
     /// </summary>
     template <typename T, typename = LuaBindable<T>>
-    T* touserdata(lua_State* L, int n)
+    auto touserdata(lua_State* L, int n)
     {
 #ifndef NDEBUG
         return static_cast<T*>(luaL_checkudata(L, n, T::class_name));
@@ -138,11 +138,14 @@ NS_RAINBOW_LUA_BEGIN
              const char* name,
              bool exec = true);
 
+    /// <summary>Creates a new Lua state with a custom panic function.</summary>
+    auto newstate() -> std::unique_ptr<lua_State, decltype(&lua_close)>;
+
     /// <summary>
     ///   Returns the value returned from <see cref="luaL_optinteger"/> but
     ///   without the extra type check if <c>NDEBUG</c> is defined.
     /// </summary>
-    inline lua_Integer optinteger(lua_State* L, int n, lua_Integer def)
+    inline auto optinteger(lua_State* L, int n, lua_Integer def)
     {
 #ifndef NDEBUG
         return luaL_optinteger(L, n, def);
@@ -155,7 +158,7 @@ NS_RAINBOW_LUA_BEGIN
     ///   Returns the value returned from <see cref="luaL_optnumber"/> but
     ///   without the extra type check if <c>NDEBUG</c> is defined.
     /// </summary>
-    inline lua_Number optnumber(lua_State* L, int n, lua_Number def)
+    inline auto optnumber(lua_State* L, int n, lua_Number def)
     {
 #ifndef NDEBUG
         return luaL_optnumber(L, n, def);
@@ -254,7 +257,7 @@ NS_RAINBOW_LUA_BEGIN
     ///   <see cref="lua_tointeger"/>, depending on whether <c>NDEBUG</c> is
     ///   defined.
     /// </summary>
-    inline lua_Integer tointeger(lua_State* L, int n)
+    inline auto tointeger(lua_State* L, int n)
     {
 #ifndef NDEBUG
         return luaL_checkinteger(L, n);
@@ -268,7 +271,7 @@ NS_RAINBOW_LUA_BEGIN
     ///   <see cref="lua_tonumber"/>, depending on whether <c>NDEBUG</c> is
     ///   defined.
     /// </summary>
-    inline lua_Number tonumber(lua_State* L, int n)
+    inline auto tonumber(lua_State* L, int n)
     {
 #ifndef NDEBUG
         return luaL_checknumber(L, n);
