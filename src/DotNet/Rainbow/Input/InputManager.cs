@@ -35,6 +35,16 @@ namespace Rainbow.Input
 
         public static event EventHandler<IReadOnlyList<Pointer>> PointerMoved;
 
+        private static Dictionary<InputAction, InputActionTrigger> ActionDict { get; } =
+            new Dictionary<InputAction, InputActionTrigger>();
+
+        [Pure]
+        public static bool IsDown(InputAction action)
+        {
+            InputActionTrigger trigger;
+            return ActionDict.TryGetValue(action, out trigger) && IsDown(trigger.VirtualKey);
+        }
+
         [Pure]
         public static bool IsDown(uint controller, ControllerButton button)
         {
@@ -43,5 +53,16 @@ namespace Rainbow.Input
 
         [Pure]
         public static bool IsDown(VirtualKey key) => KeyboardState[(int)key];
+
+        public static void Map(InputAction action, VirtualKey key)
+        {
+            InputActionTrigger trigger;
+            if (!ActionDict.TryGetValue(action, out trigger))
+            {
+                trigger = new InputActionTrigger();
+            }
+            trigger.VirtualKey = key;
+            ActionDict[action] = trigger;
+        }
     }
 }
